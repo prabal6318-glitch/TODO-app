@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 const dbConnect=()=>{
-  mongoose.connect(process.env.MONGO_URL,{
+mongoose.connect(process.env.MONGODB_URI,{
     retryWrites: true,
     w: "majority",
     serverSelectionTimeoutMS: 5000,

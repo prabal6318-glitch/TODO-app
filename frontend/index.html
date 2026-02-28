@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TODO App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Animated background blobs -->
+  <div class="bg-canvas">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="3" y="3" width="18" height="18" rx="5" stroke="#fff" stroke-width="2"/>
+          </svg>
+        </div>
+        <span class="logo-text">TODO<span class="logo-accent">App</span></span>
+      </div>
+      <div class="header-right">
+        <div class="stats-pill">
+          <span class="stats-item">
+            <span class="stats-dot done-dot"></span>
+            <span id="doneCount">0</span> done
+          </span>
+          <div class="stats-divider"></div>
+          <span class="stats-item">
+            <span class="stats-dot pending-dot"></span>
+            <span id="totalCount">0</span> total
+          </span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-badge">✦ Stay Organised</div>
+      <h1 class="hero-title">
+        Your tasks,<br/>
+        <em>beautifully</em> managed.
+      </h1>
+      <p class="hero-sub">Create, track, and conquer every task with style.</p>
+
+      <!-- Floating graphic cards -->
+      <div class="float-cards">
+        <div class="float-card fc-1">
+          <span class="fc-icon">🎯</span>
+          <span>Focus</span>
+        </div>
+        <div class="float-card fc-2">
+          <span class="fc-icon">⚡</span>
+          <span>Speed</span>
+        </div>
+        <div class="float-card fc-3">
+          <span class="fc-icon">✅</span>
+          <span>Done!</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progress bar -->
+    <div class="progress-section">
+      <div class="progress-header">
+        <span class="progress-label">Overall Progress</span>
+        <span class="progress-pct" id="progressPct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <!-- Add Task Form -->
+    <section class="form-section">
+      <div class="form-card">
+        <div class="form-card-header">
+          <div class="form-card-icon">+</div>
+          <h2>Add New Task</h2>
+        </div>
+        <form id="todoForm" autocomplete="off">
+          <div class="input-row">
+            <div class="input-group">
+              <label for="titleInput">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h8"/></svg>
+                Task Title
+              </label>
+              <input type="text" id="titleInput" placeholder="What needs to be done?" maxlength="50" required />
+            </div>
+            <div class="input-group">
+              <label for="descInput">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h12"/></svg>
+                Description
+              </label>
+              <input type="text" id="descInput" placeholder="Add more details…" maxlength="50" required />
+            </div>
+            <button type="submit" class="btn-add" id="submitBtn">
+              <span id="submitLabel">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                Add Task
+              </span>
+              <svg id="submitSpinner" class="spin hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            </button>
+          </div>
+          <p id="formError" class="form-error hidden"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- Task List -->
+    <section class="tasks-section">
+      <div class="tasks-header">
+        <h2 class="tasks-title">My Tasks</h2>
+        <div class="filter-tabs">
+          <button class="tab active" data-filter="all">All</button>
+          <button class="tab" data-filter="pending">Pending</button>
+          <button class="tab" data-filter="done">Done</button>
+        </div>
+      </div>
+
+      <!-- States -->
+      <div id="loadingState" class="state-wrap">
+        <div class="loading-animation">
+          <div class="load-bar"></div>
+          <div class="load-bar"></div>
+          <div class="load-bar"></div>
+        </div>
+        <p>Loading your tasks…</p>
+      </div>
+
+      <div id="emptyState" class="state-wrap hidden">
+        <div class="empty-art">
+          <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+            <circle cx="40" cy="40" r="38" stroke="url(#eg)" stroke-width="2" stroke-dasharray="6 4"/>
+            <text x="40" y="48" text-anchor="middle" font-size="28">📋</text>
+            <defs>
+              <linearGradient id="eg" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#ff6b6b"/>
+                <stop offset="100%" stop-color="#a855f7"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <p class="empty-title">All clear!</p>
+        <p class="empty-sub">Add a task above to get started.</p>
+      </div>
+
+      <ul id="todoList" class="todo-list hidden"></ul>
+    </section>
+  </main>
+
+  <!-- Edit Modal -->
+  <div class="modal-overlay hidden" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-glow"></div>
+      <button class="modal-close" id="modalClose">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="modal-icon">✏️</div>
+      <h2 class="modal-title">Edit Task</h2>
+      <form id="editForm" autocomplete="off">
+        <input type="hidden" id="editId" />
+        <div class="input-group" style="margin-bottom:14px">
+          <label for="editTitle">Task Title</label>
+          <input type="text" id="editTitle" maxlength="50" required />
+        </div>
+        <div class="input-group" style="margin-bottom:20px">
+          <label for="editDesc">Description</label>
+          <input type="text" id="editDesc" maxlength="50" required />
+        </div>
+        <p id="editError" class="form-error hidden"></p>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" id="modalCancel">Cancel</button>
+          <button type="submit" class="btn-save" id="editSubmitBtn">
+            <span id="editLabel">Save Changes</span>
+            <svg id="editSpinner" class="spin hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

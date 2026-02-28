@@ -2,3 +2,5 @@
 .env
 .DS_Storenode_modules/
 .env
+node_modules/
+.env

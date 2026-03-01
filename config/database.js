@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 const dbConnect=()=>{
-mongoose.connect(process.env.MONGODB_URI,{
+  // Use environment variable or hardcoded URL
+  const mongoUrl = process.env.MONGO_URL || 'mongodb+srv://prabal6318:prabal5518@cluster0.us0v5gl.mongodb.net/?appName=Cluster0';
+  
+  mongoose.connect(mongoUrl,{
     retryWrites: true,
     w: "majority",
     serverSelectionTimeoutMS: 5000,
